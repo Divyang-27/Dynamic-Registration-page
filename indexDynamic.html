@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharpener form</title>
+    <style>
+        .heading {
+            text-align: center;
+            color: rgb(56, 56, 100);
+        }
+
+        form {
+            background-color: ivory;
+            margin-left: 15%;
+            margin-right: 45%;
+            border: 3px solid;
+
+
+        }
+
+        label {
+            display: block;
+
+        }
+
+        .button {
+            background-color: orangered;
+            color: bisque;
+            padding: 10px;
+            margin: 20px;
+            width: 90%;
+            text-align: center;
+            display: block;
+        }
+
+        input {
+            background-color: azure;
+            margin: 7px;
+            height: 30px;
+            width: 40%;
+        }
+
+        li {
+            color: whitesmoke;
+        }
+    </style>
+
+</head>
+
+<body>
+    <form action="#" onsubmit="displayUser(event)" class="forms">
+        <h2 class="heading">Book a call</h2>
+        <p class="heading">Book a slot and our representative will call you within 1hr of selected time</p>
+        <div>
+            <label for="myname"><strong>Name: </strong></label>
+            <input class="inp" type="text" name="Name" id="myname" required>
+        </div>
+        <div>
+            <label for="email"><strong>Email: </strong></label>
+
+            <input type="email" name="mail" id="email" required>
+        </div>
+        <div>
+            <label for="Phone"><strong>Phone: </strong></label>
+            <input type="text" name="contact" id="Phone" required>
+        </div>
+        <div>
+            <label for="Placecall" id="date_and_time"><strong>Time for call: </strong></label>
+            <div>
+                <input type="date" name="date" id="Placecall" class="date" required>
+                <input type="time" name="time" id="Placecall" class="time" required>
+            </div>
+        </div>
+        <button type="Submit" class="button">Get call</button>
+    </form>
+    <ul id="list-of-items">
+
+    </ul>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+
+    <script>
+let myObj = {};
+
+const parentele = document.getElementById('list-of-items');
+
+function displayUser(e) {
+    e.preventDefault();
+    
+    let name = e.target.Name.value;
+    let mail = e.target.mail.value;
+    let contact = e.target.contact.value;
+    let dates = e.target.date.value;
+    let times = e.target.time.value;
+    
+    const myObj = {
+        name: name,
+        mail: mail,
+        contact: contact,
+        dates: dates,
+        times: times
+    };
+
+    axios.post("https://crudcrud.com/api/7a191f080a0f43bbba45ea8dce775533/appointmentData/", myObj)
+        .then((response) => {
+            console.log("Data posted:", response.data);
+            addToDisplay(response.data);
+        })
+        .catch((error) => {
+            console.error("Error while posting data:", error);
+        });
+}
+
+function addToDisplay(myObj) {
+    const lchild = document.createElement('li');
+    lchild.textContent = myObj.name + " " + myObj.mail + " " + myObj.contact + " " + myObj.dates + " " + myObj.times;
+    lchild.style.color = "blue";
+    
+    const del = document.createElement('button');
+    del.textContent = 'Delete';
+    del.onclick = () => {
+        axios.delete(`https://crudcrud.com/api/7a191f080a0f43bbba45ea8dce775533/appointmentData/${myObj._id}`)
+            .then(() => {
+                parentele.removeChild(lchild);
+            })
+            .catch((error) => {
+                console.error("Error while deleting data:", error);
+            });
+    };
+    
+    const edit = document.createElement('button');
+    edit.textContent = 'Edit';
+    edit.onclick = () => {
+        document.getElementById('myname').value = myObj.name;
+        document.getElementById('email').value = myObj.mail;
+        document.getElementById('Phone').value = myObj.contact;
+        document.getElementById('date').value = myObj.dates;
+        document.getElementById('time').value = myObj.times;
+        parentele.removeChild(lchild);
+    };
+    
+    lchild.appendChild(del);
+    lchild.appendChild(edit);
+    parentele.appendChild(lchild);
+}
+
+window.onload = function() {
+    axios.get("https://crudcrud.com/api/7a191f080a0f43bbba45ea8dce775533/appointmentData/")
+        .then((response) => {
+            response.data.forEach(data => addToDisplay(data));
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+}
+
+
+    </script>
+    
+
+</body>
+
+</html>
