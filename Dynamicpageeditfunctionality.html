@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharpener form</title>
+    <style>
+        /* Your CSS styles remain unchanged */
+    </style>
+</head>
+
+<body>
+    <form action="#" onsubmit="displayUser(event)" class="forms">
+        <!-- Your form content remains unchanged -->
+    </form>
+    <ul id="list-of-items"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+    <script>
+        const parentele = document.getElementById('list-of-items');
+
+        function displayUser(e) {
+            e.preventDefault();
+
+            // Your existing function to add new data to the list
+        }
+
+        function addToDisplay(myObj) {
+            // Your existing function to add data to the list
+        }
+
+        function editUser(myObj, lchild) {
+            return () => {
+                document.getElementById('myname').value = myObj.name;
+                document.getElementById('email').value = myObj.mail;
+                document.getElementById('Phone').value = myObj.contact;
+                document.getElementById('Placecall').value = myObj.dates;
+                document.getElementById('Placecall').value = myObj.times;
+                parentele.removeChild(lchild);
+                document.querySelector('.forms').addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    let updatedName = document.getElementById('myname').value;
+                    let updatedMail = document.getElementById('email').value;
+                    let updatedContact = document.getElementById('Phone').value;
+                    let updatedDate = document.getElementById('Placecall').value;
+                    let updatedTime = document.getElementById('Placecall').value;
+
+                    const updatedObj = {
+                        name: updatedName,
+                        mail: updatedMail,
+                        contact: updatedContact,
+                        dates: updatedDate,
+                        times: updatedTime
+                    };
+
+                    axios.put(`https://crudcrud.com/api/7a191f080a0f43bbba45ea8dce775533/appointmentData/${myObj._id}`, updatedObj)
+                        .then((response) => {
+                            console.log("Data updated:", response.data);
+                            addToDisplay(response.data);
+                        })
+                        .catch((error) => {
+                            console.error("Error while updating data:", error);
+                        });
+                });
+            };
+        }
+
+        window.onload = function () {
+                axios.get("https://crudcrud.com/api/7a191f080a0f43bbba45ea8dce775533/appointmentData/")
+        .then((response) => {
+            response.data.forEach(data => addToDisplay(data));
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+        };
+    </script>
+</body>
+
+</html>
